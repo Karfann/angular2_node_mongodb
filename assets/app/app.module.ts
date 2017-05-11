@@ -44,6 +44,4 @@ import { LogoutComponent } from './auth/logout.component';
         ],
     bootstrap: [AppComponent]
 })
-export class AppModule {
-
-}
+export class AppModule {}
