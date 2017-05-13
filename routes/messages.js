@@ -18,7 +18,7 @@ router.get('/', function (req, res, next) {
 
             res.status(200).json({
                 message: 'Success',
-                obj: result
+                obj: messages
             });
 
         });
