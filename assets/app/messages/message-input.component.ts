@@ -15,7 +15,13 @@ export class MessageInputComponent{
 
     onSubmit(f: NgForm){
         const message = new Message(f.value.content,'karfann');
-        this.messageService.addMessage(message);
+        this.messageService
+            .addMessage(message)
+            .subscribe(
+                data => console.log(data),
+                error => console.error(error)
+            );
+            
         f.resetForm();
     }
 }
