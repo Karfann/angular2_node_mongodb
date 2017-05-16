@@ -18,6 +18,10 @@ export class MessageInputComponent implements OnInit {
     onSubmit(f: NgForm) {
         if (this.message) {
             this.message.content = f.value.content;
+            this.messageService.updateMessage(this.message)
+                .subscribe(
+                    result => console.log(result)
+                );
             this.message = null;
         } else {
             const message = new Message(f.value.content, 'karfann');
