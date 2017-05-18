@@ -29,6 +29,14 @@ export class AuthService {
         })
         return this.http.post(this.url + '/signin', body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw(error.json()));;
+            .catch((error: Response) => Observable.throw(error.json()));
+    }
+
+    logout(){
+        localStorage.clear();
+    }
+
+    isLoggedIn(): Boolean {
+        return localStorage.getItem('token') !== null;
     }
 }

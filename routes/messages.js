@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
 
 var Message = require('../models/message');
-
+var User = require('../models/user');
 
 router.get('/', function (req, res, next) {
     Message
@@ -24,13 +25,24 @@ router.get('/', function (req, res, next) {
         });
 });
 
+router.use('/', function (req, res, next) {
+    jwt.verify(req.query.token, 'secret', function (err, decoded) {
+        if (err) {
+            return res.status(401).json({
+                title: 'Not Authenticated',
+                error: err
+            });
+        }
+
+        next();
+    });
+});
+
 router.post('/', function (req, res, next) {
 
-    var message = new Message({
-        content: req.body.content
-    });
+    var decoded = jwt.decode(req.query.token);
 
-    message.save(function (err, result) {
+    User.findById(decoded.user._id, function (err, user) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
@@ -38,11 +50,30 @@ router.post('/', function (req, res, next) {
             });
         }
 
-        res.status(201).json({
-            message: 'Saved message',
-            obj: result
+        var message = new Message({
+            content: req.body.content,
+            user: user
         });
-    });
+
+        message.save(function (err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
+                });
+            }
+
+            user.messages.push(result);
+
+            user.save();
+
+            res.status(201).json({
+                message: 'Saved message',
+                obj: result
+            });
+        });
+    })
+
 });
 
 router.patch('/:id', function (req, res, next) {
@@ -61,7 +92,7 @@ router.patch('/:id', function (req, res, next) {
                 error: { message: 'Message not faound' }
             });
         }
-        
+
         message.content = req.body.content;
 
         message.save(function (err, result) {
@@ -80,7 +111,7 @@ router.patch('/:id', function (req, res, next) {
     });
 });
 
-router.delete('/:id', function(req, res, next){
+router.delete('/:id', function (req, res, next) {
 
     Message.findById(req.params.id, function (err, message) {
 
@@ -97,7 +128,7 @@ router.delete('/:id', function(req, res, next){
                 error: { message: 'Message not faound' }
             });
         }
-        
+
         message.remove(function (err, result) {
             if (err) {
                 return res.status(500).json({
