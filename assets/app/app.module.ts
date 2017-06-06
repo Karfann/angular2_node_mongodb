@@ -10,6 +10,7 @@ import { routing } from './app.routing';
 
 import { AppComponent } from "./app.component";
 import { AuthenticationComponent } from './auth/authentication.component';
+import { ErrorComponent } from './errors/error.component';
 import { HeaderComponent } from './header.component';
 import { LogoutComponent } from './auth/logout.component';
 import { MessageComponent } from './messages/message.component';
@@ -20,8 +21,9 @@ import { SigninComponent } from './auth/signin.component';
 import { SignupComponent } from './auth/signup.component';
 
 // SERVICES
-import { MessageService } from './messages/message.service';
 import { AuthService } from './auth/auth.service';
+import { ErrorService } from './errors/error.service';
+import { MessageService } from './messages/message.service';
 
 @NgModule({
     declarations: [
@@ -34,7 +36,8 @@ import { AuthService } from './auth/auth.service';
         HeaderComponent,
         LogoutComponent,
         SigninComponent,
-        SignupComponent
+        SignupComponent,
+        ErrorComponent
     ],
     imports: [
         BrowserModule,
@@ -45,7 +48,8 @@ import { AuthService } from './auth/auth.service';
     ],
     providers: [
         MessageService,
-        AuthService
+        AuthService,
+        ErrorService
     ],
     bootstrap: [AppComponent]
 })

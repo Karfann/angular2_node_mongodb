@@ -5,12 +5,16 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { User } from './user.model';
+import { ErrorService } from './../errors/error.service';
 
 @Injectable()
 export class AuthService {
     private url: string = 'http://localhost:3000/user';
 
-    constructor(private http: Http) { }
+    constructor(
+        private http: Http,
+        private errorService: ErrorService
+        ) { }
 
     signup(user: User) {
         const body = JSON.stringify(user);
@@ -19,7 +23,10 @@ export class AuthService {
         })
         return this.http.post(this.url, body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw(error.json()));;
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            })
     }
 
     signin(user: User) {
@@ -29,7 +36,10 @@ export class AuthService {
         })
         return this.http.post(this.url + '/signin', body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw(error.json()));
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            })
     }
 
     logout(){
